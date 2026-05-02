@@ -1,0 +1,160 @@
+[tool.poetry]
+name = "nomina-co"
+version = "0.1.0"
+description = "Librería para cálculo de nómina colombiana y generación XML DIAN - Prestaciones sociales, aportes PILA, retención en la fuente"
+authors = ["Tu Nombre <tu@email.com>"]
+readme = "README.md"
+license = "MIT"
+homepage = "https://github.com/tuusuario/nomina-co"
+repository = "https://github.com/tuusuario/nomina-co"
+documentation = "https://nomina-co.readthedocs.io"
+keywords = [
+    "nomina",
+    "colombia",
+    "DIAN",
+    "PILA",
+    "prestaciones-sociales",
+    "cesantias",
+    "prima",
+    "vacaciones",
+    "retencion-fuente",
+    "nomina-electronica",
+    "payroll"
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Financial and Insurance Industry",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Office/Business :: Financial :: Accounting",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Natural Language :: Spanish",
+    "Typing :: Typed"
+]
+packages = [{include = "nomina_co", from = "src"}]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+pydantic = "^2.5.0"
+lxml = "^5.0.0"
+python-dateutil = "^2.8.2"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.4.0"
+pytest-cov = "^4.1.0"
+black = "^23.12.0"
+ruff = "^0.1.9"
+mypy = "^1.8.0"
+pre-commit = "^3.6.0"
+ipython = "^8.19.0"
+
+[tool.poetry.group.docs.dependencies]
+mkdocs = "^1.5.3"
+mkdocs-material = "^9.5.3"
+mkdocstrings = {extras = ["python"], version = "^0.24.0"}
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.black]
+line-length = 100
+target-version = ['py310', 'py311', 'py312']
+include = '\.pyi?$'
+exclude = '''
+/(
+    \.git
+  | \.mypy_cache
+  | \.pytest_cache
+  | \.venv
+  | build
+  | dist
+)/
+'''
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+select = [
+    "E",   # pycodestyle errores
+    "W",   # pycodestyle advertencias
+    "F",   # pyflakes
+    "I",   # isort
+    "B",   # flake8-bugbear
+    "C4",  # flake8-comprehensions
+    "UP",  # pyupgrade
+    "ARG", # flake8-unused-arguments
+    "SIM", # flake8-simplify
+]
+ignore = [
+    "E501",  # line-too-long (manejado por black)
+    "B008",  # do-not-perform-function-calls-in-argument-defaults
+]
+
+[tool.ruff.per-file-ignores]
+"__init__.py" = ["F401"]  # Permitir imports no usados en __init__.py
+"tests/**/*.py" = ["ARG"]  # Permitir argumentos no usados en tests
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py", "*_test.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = [
+    "--verbose",
+    "--cov=nomina_co",
+    "--cov-report=term-missing",
+    "--cov-report=html",
+    "--cov-report=xml",
+    "--strict-markers",
+]
+markers = [
+    "slow: marca tests que tardan mucho tiempo",
+    "integration: marca tests de integración con servicios externos",
+    "unit: marca tests unitarios rápidos",
+]
+
+[tool.mypy]
+python_version = "3.10"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+check_untyped_defs = true
+no_implicit_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+strict_equality = true
+strict_concatenate = true
+
+[[tool.mypy.overrides]]
+module = "tests.*"
+disallow_untyped_defs = false
+
+[tool.coverage.run]
+source = ["src/nomina_co"]
+omit = [
+    "*/tests/*",
+    "*/__pycache__/*",
+    "*/site-packages/*",
+]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if __name__ == .__main__.:",
+    "if TYPE_CHECKING:",
+    "class .*\\bProtocol\\):",
+    "@(abc\\.)?abstractmethod",
+]
+precision = 2
+show_missing = true
+skip_covered = false
